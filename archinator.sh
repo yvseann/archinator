@@ -43,3 +43,30 @@ LOCALE   :  ${LOCALE}
 TIMEZONE :  ${TIMEZONE}
 USERNAME :  ${USER_NAME}
 "
+
+# Prompt user for passwords
+
+while true; do
+  read -s -p "Enter password for ${USER_NAME}: " USER_PASSWORD
+  echo
+  read -s -p "Confirm password: " USER_PASSWORD_CONFIRM
+  echo
+
+  if [ "$USER_PASSWORD" = "$USER_PASSWORD_CONFIRM" ]; then
+    break
+  else
+    echo "Passwords do not match. Please try again."
+  fi
+done
+
+# Make sure DISK is correct
+echo "The selected disk is ${DISK}. This will delete all data on this disk."
+read -p "Are you sure you want to continue? (yes/No): " CONFIRM
+
+# become lowercase, my string! (what is even going on here)
+CONFIRM=$(echo "$CONFIRM" | tr '[:upper:]' '[:lower:]')
+
+if [ "$CONFIRM" != "yes" ] && [ "$CONFIRM" != "y" ]; then
+  echo "Operation cancelled."
+  exit 1
+fi
