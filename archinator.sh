@@ -29,7 +29,7 @@ fi
 
 # Prompt user for inputs
 
-read -p "Enter the disk to install Arch Linux (e.g. /dev/sda2): " DISK
+read -p "\nEnter the disk to install Arch Linux (e.g. /dev/sda2): " DISK
 read -p "Enter the Hostname for this installation: " HOSTNAME
 read -p "Enter the locale (e.g., en_US.UTF-8): " LOCALE
 read -p "Enter the timezone: " TIMEZONE
@@ -37,9 +37,9 @@ read -p "Enter username for the new user: " USER_NAME
 
 # Read back inputs
 echo -e "
-DISK     : ${DISK}
-HOSTNAME : ${HOSTNAME}
-LOCALE   : ${LOCALE}
-TIMEZONE : ${TIMEZONE}
-USERNAME : ${USER_NAME}
+DISK     :  ${DISK}
+HOSTNAME :  ${HOSTNAME}
+LOCALE   :  ${LOCALE}
+TIMEZONE :  ${TIMEZONE}
+USERNAME :  ${USER_NAME}
 "
