@@ -12,7 +12,6 @@ sleep 1
 echo "Setting localization..."
 sleep 0.5
 
-locale-gen
 echo "Available locales:"
 grep -E '^[a-zA-Z]' /etc/locale.gen | awk '{print $1}'
 while true; do
@@ -38,4 +37,4 @@ echo "Setting system default locale..."
 echo "LANG=${LOCALIZATION}" > /etc/locale.conf
 
 echo "Setting keymap..."
-cat KEYMAP={KEYMAP} > /etc/vconsole.conf
+cat KEYMAP=${KEYMAP} > /etc/vconsole.conf

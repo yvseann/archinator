@@ -23,7 +23,7 @@ ARCHINATOR - A SCRIPT SOME RANDOM KID MADE BECAUSE THEY WERE BORED!
 if you want to change your console font do that before running this script.
 EOF
 
-read -n 1 -s -p "Press any button to continue..."
+read -n 1 -s -p "Press any key to continue..."
 # Is root running this script?
 if [ "$(id -u)" -ne 0 ]; then
     echo -e "\n\nCongratulations! You somehow managed to run this script while not in root, in the archiso! How have you managed that? The archiso should be in root. Are you sure you're running an archiso? I really don't recommend using this script on a live machine.\n\n"
@@ -35,7 +35,7 @@ echo # just a newline
 # prompt user for keymaps and set it
 
 echo -e "About to show all valid keymaps. Once you have picked a keymap press Q to enter the keymap you wish to use."
-read -n 1 -s -p "Press any button to continue..."
+read -n 1 -s -p "Press any key to continue..."
 
 echo -e "\nAvailable keymaps"
 localectl list-keymaps
@@ -60,7 +60,7 @@ sleep 1 # go to sleep
 timedatectl set-ntp true
 
 echo -e "About to show all valid timezones. Once you have picked a timezone press Q to enter the timezone you wish to use."
-read -n 1 -s -p "Press any button to continue..."
+read -n 1 -s -p "Press any key to continue..."
 
 timedatectl list-timezones
 while true; do
@@ -217,8 +217,8 @@ lsblk -f
 
 # find fastest mirrors
 
-echo "Finding fastest server which has https protocol and has updated in the last 12 hours"
-reflector -f 12 -a 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+echo "Finding fastest server which has https protocol and has updated in the last 12 hours. This may take a while. If you get impatient, you can CTRL + C to cancel searching for more mirrors, but this may result in the best mirror not being found or none at all if you cancel it too early."
+reflector -f 12 -a 12 --protocol https --sort rate --connection-timeout 3 --save /etc/pacman.d/mirrorlist
 
 # pacstrap stuff
 
@@ -228,14 +228,16 @@ elif grep -qi "amd" /proc/cpuinfo; then
     MICROCODE="amd-ucode"
 fi
 
-echo "Pacstraping to mnt base, linux, linux-lts, linux-firmware, base-devel. ${MICROCODE}"
+echo "Pacstraping to mnt: base, linux, linux-lts, linux-firmware, base-devel. ${MICROCODE}"
 pacstrap -K /mnt base linux linux-lts linux-firmware base-devel $MICROCODE
 
 # configure the system
 echo "Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
+
 echo "chrooting into /mnt..."
 
+read -n 1 -s -p "Press any key to continue..."
 cp chroot.sh /mnt
 chmod +x /mnt/chroot.sh
 arch-chroot /mnt /bin/bash -c "export TIMEZONE='$TIMEZONE' KEYMAP='$KEYMAP'; /chroot.sh"
