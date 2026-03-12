@@ -155,6 +155,20 @@ else
     ROOT_PART="${installation_disk}2"
 fi
 
+# swapfile
+read -p "Do you want to create a swapfile? (y/N): " swap_choice
+if [[ "$swap_choice" =~ ^[Yy]$ ]]; then
+    read -p "Swap size in MiB (e.g. 2048): " swap_size
+    echo "Creating swapfile of ${swap_size}MiB..."
+
+    dd if=/dev/zero of=/mnt/swapfile bs=1M count="$swap_size" status=progress
+    chmod 600 /mnt/swapfile
+    mkswap /mnt/swapfile
+    swapon /mnt/swapfile
+
+    echo "Swapfile created and enabled."
+fi
+
 # format partitions
 echo "Formatting partitions..."
 
@@ -193,20 +207,6 @@ elif [ "$filesystem" = "btrfs" ]; then
     if [ "$BOOTMODE" = "UEFI" ]; then
         mount "$BOOT_PART" /mnt/boot
     fi
-fi
-
-# swapfile
-read -p "Do you want to create a swapfile? (y/N): " swap_choice
-if [[ "$swap_choice" =~ ^[Yy]$ ]]; then
-    read -p "Swap size in MiB (e.g. 2048): " swap_size
-    echo "Creating swapfile of ${swap_size}MiB..."
-
-    dd if=/dev/zero of=/mnt/swapfile bs=1M count="$swap_size" status=progress
-    chmod 600 /mnt/swapfile
-    mkswap /mnt/swapfile
-    swapon /mnt/swapfile
-
-    echo "Swapfile created and enabled."
 fi
 
 clear
