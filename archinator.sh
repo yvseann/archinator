@@ -23,7 +23,7 @@ EOF
 
 # Is root running this script?
 if [ "$(id -u)" -ne 0 ]; then
-    echo -e "\n\nTHIS INSTALL SCRIPT MUST BE RUN AS ROOT! WHY IS YOUR ARCHISO NOT IN ROOT?\n\n"
+    echo -e "\n\nCongratulations! You somehow managed to run this script while not in root, in the archiso! How have you managed that? The archiso should be in root. Are you sure you're running an archiso? I really don't recommend using this script on a live machine.\n\n"
     exit 1
 fi
 
