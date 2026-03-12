@@ -29,8 +29,9 @@ fi
 
 # Show all available disks
 lsblk -f
-# Prompt user for inputs
-read -p "\nEnter the disk to install Arch Linux (e.g. /dev/sda2): " DISK
+# Prompt user for inputs (and make a newline)
+echo -e "\n" # newline lol
+read -p "Enter the disk to install Arch Linux (e.g. /dev/sda2): " DISK
 read -p "Enter the Hostname for this installation: " HOSTNAME
 read -p "Enter the locale (e.g., en_US.UTF-8): " LOCALE
 read -p "Enter the timezone: " TIMEZONE
