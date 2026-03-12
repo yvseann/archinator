@@ -30,11 +30,11 @@ done
 echo "Enabling locale..."
 sed -i "s/^#${LOCALIZATION}/${LOCALIZATION}/" /etc/locale.gen
 
-echo "Generating locale..."
-locale-gen
-
 echo "Setting system default locale..."
 echo "LANG=${LOCALIZATION}" > /etc/locale.conf
+
+echo "Generating locale..."
+locale-gen
 
 #keymap
 echo "Setting keymap..."
