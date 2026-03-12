@@ -195,7 +195,7 @@ elif [ "$filesystem" = "btrfs" ]; then
     fi
 fi
 
-swapfile
+# swapfile
 read -p "Do you want to create a swapfile? (Y/n): " swap_choice
 if [[ "$swap_choice" =~ ^[Yy]$ ]]; then
     read -p "Swap size in MiB (e.g. 2048): " swap_size
