@@ -56,16 +56,6 @@ done
 
 sleep 1 # go to sleep
 
-# check if uefi or bios
-
-if [ -d /sys/firmware/efi ]; then
-    BOOTMODE="UEFI"
-else
-    BOOTMODE="BIOS"
-fi
-
-echo -e "\nBOOT MODE: ${BOOTMODE}\n"
-
 # timedatectl
 timedatectl set-ntp true
 
@@ -90,6 +80,16 @@ done
 timedatectl
 
 sleep 1 # go to sleep
+
+# check if uefi or bios
+
+if [ -d /sys/firmware/efi ]; then
+    BOOTMODE="UEFI"
+else
+    BOOTMODE="BIOS"
+fi
+
+echo -e "\nBOOT MODE: ${BOOTMODE}\n"
 
 # choose disk and filesystem
 lsblk -f
@@ -214,3 +214,28 @@ fi
 
 clear
 lsblk -f
+
+# find fastest mirrors
+
+echo "Finding fastest server which has https protocol and has updated in the last 12 hours"
+reflector -f 12 -a 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+
+# pacstrap stuff
+
+if grep -qi "intel" /proc/cpuinfo; then
+    MICROCODE="intel-ucode"
+elif grep -qi "amd" /proc/cpuinfo; then
+    MICROCODE="amd-ucode"
+fi
+
+echo "Pacstraping to mnt base, linux, linux-lts, linux-firmware, base-devel. ${MICROCODE}"
+pacstrap -K /mnt base linux linux-lts linux-firmware base-devel $MICROCODE
+
+# configure the system
+echo "Generating fstab..."
+genfstab -U /mnt >> /mnt/etc/fstab
+echo "chrooting into /mnt..."
+
+cp chroot.sh /mnt
+chmod +x /mnt/chroot.sh
+arch-chroot /mnt /bin/bash -c "export TIMEZONE='$TIMEZONE' KEYMAP='$KEYMAP'; /chroot.sh"
