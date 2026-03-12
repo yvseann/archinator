@@ -1,9 +1,9 @@
 i am extremely bad at markdown if someone wants to make my readme better go ahead please lol feel free to credit yourself if you do
 # ARCHINATOR 
-### Sean's Custom Arch Install Script that he made because he was bored. Idk I just want to make my arch install custom but want to be able to install it fast. This isn't really intended for public use but if you want it I'm not stopping you lol. CC0 Licence so do whatever you want with it.
+### Sean's Custom Arch Install Script that he made because he was bored. Idk I just want to make my arch install custom but want to be able to install it fast. This isn't really intended for public use but if you want it I'm not stopping you lol. MIT Licence so do whatever you want with it. just give like attribution or something idk
 The best arch installer IN THE ENTIRE TRI-STATE AREA /ref
 
-[![CP0 License](https://img.shields.io/badge/License-CC0-blue.svg)](#)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)  
 This project is provided “as is” with no warranty. Use at your own risk.
 
 ## Screenshots  
@@ -55,4 +55,4 @@ If you have any feedback, please make an issue or something or add me on [discor
 
 ## License  
 
-[CC0](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)  
