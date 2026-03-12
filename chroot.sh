@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #time
-echo "Setting time..."
+echo -e "\nSetting time..."
 ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 hwclock --systohc
 timedatectl
@@ -68,3 +68,28 @@ echo "Hostname ${HOSTNAME} has been set."
 # Initramfs
 
 mkinitcpio -P
+
+# Root Password
+
+echo "Set the root password."
+
+while true; do
+    read -s -p "Enter root password: " ROOTPASS
+    echo
+    read -s -p "Confirm root password: " ROOTPASS_CONFIRM
+    echo
+
+    if [[ -z "$ROOTPASS" ]]; then
+        echo "ARCHINATOR Installation script does not support empty root passwords. This is because it is unsafe, and makes sure you think before running commands. I will however, not prevent you from doing this once you have finished installation. I understand this may be required for some usecases, so you can of course disable it after the installation."
+        continue
+    fi
+
+    if [[ "$ROOTPASS" != "$ROOTPASS_CONFIRM" ]]; then
+        echo "Passwords do not match. Try again."
+        continue
+    fi
+
+    echo "root:${ROOTPASS}" | chpasswd
+    echo "Root password set successfully."
+    break
+done
