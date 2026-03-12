@@ -27,8 +27,9 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
+# Show all available disks
+fdisk -l
 # Prompt user for inputs
-
 read -p "\nEnter the disk to install Arch Linux (e.g. /dev/sda2): " DISK
 read -p "Enter the Hostname for this installation: " HOSTNAME
 read -p "Enter the locale (e.g., en_US.UTF-8): " LOCALE
