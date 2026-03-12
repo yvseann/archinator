@@ -10,12 +10,11 @@ sleep 1
 
 # localization
 echo "Setting localization..."
-sleep 0.5
-
-echo "Available locales:"
-grep -E '^[a-zA-Z]' /etc/locale.gen | awk '{print $1}'
+echo -e "About to show all valid locales. Once you have picked a locale press Q to enter the locale you wish to use."
+read -n 1 -s -p "Press any key to continue..."
+localectl list-locales
 while true; do
-    read -p "Enter the locale you want (e.g. en_GB.UTF-8): " LOCALIZATION
+    read -p "Enter the locale you want (e.g. en_GB.UTF-8, en_US.UTF-8): " LOCALIZATION
 
     # check if locale exists in locale.gen
     if grep -q "^#\?${LOCALIZATION} " /etc/locale.gen; then
@@ -38,7 +37,6 @@ locale-gen
 
 #keymap
 echo "Setting keymap..."
-mkdir -p /etc/vconsole.conf
 echo "KEYMAP=${KEYMAP}" > /etc/vconsole.conf
 
 # hostname
