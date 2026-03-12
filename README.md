@@ -26,6 +26,14 @@ bash. i learned bash. kinda i still suck at it. because this project is barely e
 
 * First of all make sure you are connected to the internet connectived via an ethernet cable or use [IWCTL](https://man.archlinux.org/man/iwctl.1)
 
+### Install git
+
+* You need git.
+
+~~~
+pacman -S git
+~~~
+
 ### Now install archinator to archiso:
 
 Clone the repository
