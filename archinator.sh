@@ -33,11 +33,12 @@ fi
 echo # just a newline
 
 # prompt user for keymaps and set it
-echo -e "\nAvailable keymaps"
-localectl list-keymaps
 
 echo -e "About to show all valid keymaps. Once you have picked a keymap press Q to enter the keymap you wish to use."
 read -n 1 -s -p "Press any button to continue..."
+
+echo -e "\nAvailable keymaps"
+localectl list-keymaps
 
 while true; do
     read -p "Enter the keymap you want (e.g. uk, us, de-latin1): " KEYMAP
