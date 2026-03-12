@@ -218,7 +218,6 @@ lsblk -f
 # find fastest mirrors
 
 echo "Finding fastest server which has https protocol and has updated in the last 12 hours. This may take a while. If you get impatient, you can CTRL + C to cancel searching for more mirrors, but this may result in the best mirror not being found or none at all if you cancel it too early."
-pacman -Sy reflector --noconfirm
 reflector -f 12 -a 12 --protocol https --sort rate --connection-timeout 3 --save /etc/pacman.d/mirrorlist
 
 # pacstrap stuff
