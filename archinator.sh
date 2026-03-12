@@ -71,6 +71,8 @@ timedatectl set-ntp true
 
 echo -e "About to show all valid timezones. Once you have picked a timezone press Q to enter the timezone you wish to use."
 read -n 1 -s -p "Press any button to continue..."
+
+timedatectl list-timezones
 while true; do
     read -p "Enter the timezone you want (e.g. Europe/London): " TIMEZONE
 
@@ -96,7 +98,7 @@ while true; do
 
     # does the disk exist?
 
-    if lsblk -f | grep -qx "$installation_disk"; then
+    if [ -b "$installation_disk" ]; then
       # do stuff here
       break
     else
