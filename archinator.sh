@@ -208,3 +208,6 @@ if [[ "$swap_choice" =~ ^[Yy]$ ]]; then
 
     echo "Swapfile created and enabled."
 fi
+
+clear
+lsblk -f
