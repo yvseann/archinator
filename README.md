@@ -53,4 +53,4 @@ If you have any feedback, please make an issue or something or add me on [discor
 
 ## License  
 
-[CC0](https://creativecommons.org/public-domain/cc0/)
+[CC0](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
