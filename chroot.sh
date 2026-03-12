@@ -37,4 +37,5 @@ echo "Setting system default locale..."
 echo "LANG=${LOCALIZATION}" > /etc/locale.conf
 
 echo "Setting keymap..."
-cat KEYMAP=${KEYMAP} > /etc/vconsole.conf
+mkdir -p /etc/vconsole.conf
+echo "KEYMAP=${KEYMAP}" > /etc/vconsole.conf

@@ -195,22 +195,22 @@ elif [ "$filesystem" = "btrfs" ]; then
     fi
 fi
 
-# swapfile
-# read -p "Do you want to create a swapfile? (Y/n): " swap_choice
-# if [[ "$swap_choice" =~ ^[Yy]$ ]]; then
-#     read -p "Swap size in MiB (e.g. 2048): " swap_size
+swapfile
+read -p "Do you want to create a swapfile? (Y/n): " swap_choice
+if [[ "$swap_choice" =~ ^[Yy]$ ]]; then
+    read -p "Swap size in MiB (e.g. 2048): " swap_size
 
-#     if ! [[ "$swap_size" =~ ^[0-9]+$ ]] || [ "$swap_size" -le 0 ]; then
-#         echo "Invalid swap size. Skipping swapfile."
-#     else
-#         echo "Creating swapfile of ${swap_size}MiB..."
-#         dd if=/dev/zero of=/mnt/swapfile bs=1M count="$swap_size" status=progress
-#         chmod 600 /mnt/swapfile
-#         mkswap /mnt/swapfile
-#         swapon /mnt/swapfile
-#         echo "Swapfile created and enabled."
-#     fi
-# fi
+    if ! [[ "$swap_size" =~ ^[0-9]+$ ]] || [ "$swap_size" -le 0 ]; then
+        echo "Invalid swap size. Skipping swapfile."
+    else
+        echo "Creating swapfile of ${swap_size}MiB..."
+        dd if=/dev/zero of=/mnt/swapfile bs=1M count="$swap_size" status=progress
+        chmod 600 /mnt/swapfile
+        mkswap /mnt/swapfile
+        swapon /mnt/swapfile
+        echo "Swapfile created and enabled."
+    fi
+fi
 
 clear
 lsblk -f
