@@ -229,6 +229,7 @@ elif grep -qi "amd" /proc/cpuinfo; then
 fi
 
 echo "Pacstraping to mnt: base, linux, linux-lts, linux-firmware, base-devel. ${MICROCODE}"
+sleep 0.1
 pacstrap -K /mnt base linux linux-lts linux-firmware base-devel $MICROCODE
 
 # configure the system
