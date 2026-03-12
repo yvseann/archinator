@@ -125,14 +125,14 @@ done
 
 # partition disk
 
-echo "Partitioning disk: $installation_disk"
-
 echo "WARNING: This will ERASE ALL DATA on $installation_disk"
 read -p "Type YES to continue: " confirm
 if [ "$confirm" != "YES" ]; then
     echo "Aborted."
     exit 1
 fi
+
+echo "Partitioning disk: $installation_disk"
 
 wipefs -af "$installation_disk"
 sgdisk -Zo "$installation_disk"
@@ -168,20 +168,43 @@ elif [ "$filesystem" = "btrfs" ]; then
     mkfs.btrfs -f "$ROOT_PART"
 fi
 
-# mount partitions
-
+#mount partitions
 echo "Mounting partitions..."
+
 if [ "$filesystem" = "ext4" ]; then
     mount "$ROOT_PART" /mnt
-    mkdir -p "/mnt/boot"
-    mount "$BOOT_PART" /mnt/boot
+
+    if [ "$BOOTMODE" = "UEFI" ]; then
+        mkdir -p /mnt/boot
+        mount "$BOOT_PART" /mnt/boot
+    fi
+
 elif [ "$filesystem" = "btrfs" ]; then
     mount "$ROOT_PART" /mnt
     btrfs subvolume create /mnt/@
     btrfs subvolume create /mnt/@home
     umount /mnt
     mount -o subvol=@ "$ROOT_PART" /mnt
-    mkdir -p /mnt/{home,boot}
+    mkdir -p /mnt/home
+    if [ "$BOOTMODE" = "UEFI" ]; then
+        mkdir -p /mnt/boot
+    fi
     mount -o subvol=@home "$ROOT_PART" /mnt/home
-    mount "$BOOT_PART" /mnt/boot
+    if [ "$BOOTMODE" = "UEFI" ]; then
+        mount "$BOOT_PART" /mnt/boot
+    fi
+fi
+
+# swapfile
+read -p "Do you want to create a swapfile? (y/N): " swap_choice
+if [[ "$swap_choice" =~ ^[Yy]$ ]]; then
+    read -p "Swap size in MiB (e.g. 2048): " swap_size
+    echo "Creating swapfile of ${swap_size}MiB..."
+
+    dd if=/dev/zero of=/mnt/swapfile bs=1M count="$swap_size" status=progress
+    chmod 600 /mnt/swapfile
+    mkswap /mnt/swapfile
+    swapon /mnt/swapfile
+
+    echo "Swapfile created and enabled."
 fi
