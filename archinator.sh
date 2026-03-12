@@ -28,7 +28,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 # Show all available disks
-fdisk -l
+lsblk -f
 # Prompt user for inputs
 read -p "\nEnter the disk to install Arch Linux (e.g. /dev/sda2): " DISK
 read -p "Enter the Hostname for this installation: " HOSTNAME

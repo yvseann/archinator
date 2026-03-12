@@ -31,7 +31,7 @@ bash. i learned bash. kinda i still suck at it. because this project is barely e
 * You need git.
 
 ~~~
-pacman -S git
+pacman -Sy git
 ~~~
 
 ### Now install archinator to archiso:
