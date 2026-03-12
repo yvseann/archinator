@@ -54,7 +54,7 @@ while true; do
     fi
 done
 
-sleep 1
+sleep 1 # go to sleep
 
 # check if uefi or bios
 
@@ -86,3 +86,21 @@ while true; do
 done
 
 timedatectl
+
+sleep 1 # go to sleep
+
+# disk stuff
+lsblk -f
+while true; do
+    read -p "What disk do you wish to partition on? (e.g. /dev/sda): " installation_disk
+
+    # does the disk exist?
+
+    if lsblk -f | grep -qx "$installation_disk"; then
+      # do stuff here
+      break
+    else
+      echo "Invalid Disk: ${installation_disk}"
+      echo "Try again."
+    fi
+done
