@@ -36,6 +36,9 @@ echo # just a newline
 echo -e "\nAvailable keymaps"
 localectl list-keymaps
 
+echo -e "About to show all valid keymaps. Once you have picked a keymap press Q to enter the keymap you wish to use."
+read -n 1 -s -p "Press any button to continue..."
+
 while true; do
     read -p "Enter the keymap you want (e.g. uk, us, de-latin1): " KEYMAP
 
@@ -65,6 +68,8 @@ echo -e "\nBOOT MODE: ${BOOTMODE}\n"
 # timedatectl
 timedatectl set-ntp true
 
+echo -e "About to show all valid languages. Once you have picked a keymap press Q to enter the language you wish to use."
+read -n 1 -s -p "Press any button to continue..."
 while true; do
     read -p "Enter the timezone you want (e.g. Europe/London): " TIMEZONE
 
@@ -74,7 +79,7 @@ while true; do
         echo "Loaded timezone: ${TIMEZONE}"
         break
     else
-        echo "Invalid Timezone: {$TIMEZONE}"
+        echo "Invalid Timezone: ${TIMEZONE}"
         echo "Try again."
     fi
 done
