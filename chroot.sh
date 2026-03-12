@@ -36,6 +36,37 @@ locale-gen
 echo "Setting system default locale..."
 echo "LANG=${LOCALIZATION}" > /etc/locale.conf
 
+#keymap
 echo "Setting keymap..."
 mkdir -p /etc/vconsole.conf
 echo "KEYMAP=${KEYMAP}" > /etc/vconsole.conf
+
+# hostname
+while true; do
+    read -p "Enter the hostname you want (e.g. archinator): " HOSTNAME
+
+    # no empty input
+    if [[ -z "$HOSTNAME" ]]; then
+        echo "Hostname cannot be empty."
+        continue
+    fi
+
+    # validate hostname (1–63 chars, lowercase, digits, hyphens, cannot start or end with -)
+    if [[ "$HOSTNAME" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$ ]]; then
+        echo "Hostname accepted: $HOSTNAME"
+        break
+    else
+        echo "Invalid hostname."
+        echo "Rules:"
+        echo "- 1 to 63 characters"
+        echo "- lowercase a–z, digits 0–9, and hyphens"
+        echo "- cannot start or end with a hyphen"
+    fi
+done
+
+echo "$HOSTNAME" > /etc/hostname
+echo "Hostname ${HOSTNAME} has been set."
+
+# Initramfs
+
+mkinitcpio -P
