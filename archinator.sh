@@ -69,7 +69,7 @@ echo -e "\nBOOT MODE: ${BOOTMODE}\n"
 # timedatectl
 timedatectl set-ntp true
 
-echo -e "About to show all valid languages. Once you have picked a keymap press Q to enter the language you wish to use."
+echo -e "About to show all valid timezones. Once you have picked a timezone press Q to enter the timezone you wish to use."
 read -n 1 -s -p "Press any button to continue..."
 while true; do
     read -p "Enter the timezone you want (e.g. Europe/London): " TIMEZONE
