@@ -91,7 +91,7 @@ timedatectl
 
 sleep 1 # go to sleep
 
-# disk stuff
+# choose disk and filesystem
 lsblk -f
 while true; do
     read -p "What disk do you wish to partition on? (e.g. /dev/sda): " installation_disk
@@ -99,10 +99,89 @@ while true; do
     # does the disk exist?
 
     if [ -b "$installation_disk" ]; then
-      # do stuff here
+      echo "Disk Found: ${installation_disk}"
+
+      PS3="Choose a filesystem: "
+      select filesystem in "EXT4" "BTRFS"; do
+          case $filesystem in
+              "EXT4")
+                filesystem="ext4"
+                echo "Using EXT4"
+                break
+                ;;
+              "BTRFS")
+                filesystem="btrfs"
+                echo "Using BTRFS"
+                break
+                ;;
+              *)
+                echo "Invalid selection."
+                ;;
+          esac
+      done
       break
-    else
-      echo "Invalid Disk: ${installation_disk}"
-      echo "Try again."
     fi
 done
+
+# partition disk
+
+echo "Partitioning disk: $installation_disk"
+
+echo "WARNING: This will ERASE ALL DATA on $installation_disk"
+read -p "Type YES to continue: " confirm
+if [ "$confirm" != "YES" ]; then
+    echo "Aborted."
+    exit 1
+fi
+
+wipefs -af "$installation_disk"
+sgdisk -Zo "$installation_disk"
+
+if [ "$BOOTMODE" = "UEFI" ]; then
+    echo "Creating UEFI partitions..."
+    sgdisk -n 1:0:+512M -t 1:ef00 "$installation_disk"
+    sgdisk -n 2:0:0     -t 2:8300 "$installation_disk"
+else
+    echo "Creating BIOS partitions..."
+    sgdisk -n 1:0:+1M   -t 1:ef02 "$installation_disk"
+    sgdisk -n 2:0:0     -t 2:8300 "$installation_disk"
+fi
+
+if [[ "$installation_disk" == *"nvme"* ]]; then
+    BOOT_PART="${installation_disk}p1"
+    ROOT_PART="${installation_disk}p2"
+else
+    BOOT_PART="${installation_disk}1"
+    ROOT_PART="${installation_disk}2"
+fi
+
+# format partitions
+echo "Formatting partitions..."
+
+if [ "$BOOTMODE" = "UEFI" ]; then
+    mkfs.fat -F32 "$BOOT_PART"
+fi
+
+if [ "$filesystem" = "ext4" ]; then
+    mkfs.ext4 "$ROOT_PART"
+elif [ "$filesystem" = "btrfs" ]; then
+    mkfs.btrfs -f "$ROOT_PART"
+fi
+
+# mount partitions
+
+echo "Mounting partitions..."
+if [ "$filesystem" = "ext4" ]; then
+    mount "$ROOT_PART" /mnt
+    mkdir -p "/mnt/boot"
+    mount "$BOOT_PART" /mnt/boot
+elif [ "$filesystem" = "btrfs" ]; then
+    mount "$ROOT_PART" /mnt
+    btrfs subvolume create /mnt/@
+    btrfs subvolume create /mnt/@home
+    umount /mnt
+    mount -o subvol=@ "$ROOT_PART" /mnt
+    mkdir -p /mnt/{home,boot}
+    mount -o subvol=@home "$ROOT_PART" /mnt/home
+    mount "$BOOT_PART" /mnt/boot
+fi
