@@ -37,6 +37,9 @@ read -p "Enter the locale (e.g., en_US.UTF-8): " LOCALE
 read -p "Enter the timezone: " TIMEZONE
 read -p "Enter username for the new user: " USER_NAME
 
+# i have literally no idea how to enable secure boot
+read -p "Do you want secure boot? THIS IS RECOMMENDED (Y/n): " SECURE_BOOT
+
 # Read back inputs
 echo -e "
 DISK     :  ${DISK}
