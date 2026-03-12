@@ -19,59 +19,64 @@ SSS    S*S  S*S    SSS    YSSP  SSS    S*S  S*S  S*S    SSS  SSS    S*S       S*
        SP   SP                         SP   SP   SP                 SP        SP                       SP          
        Y    Y                          Y    Y    Y                  Y         Y                        Y           
 ARCHINATOR - A SCRIPT SOME RANDOM KID MADE BECAUSE THEY WERE BORED!
+
+if you want to change your console font do that before running this script.
 EOF
 
+read -n 1 -s -p "Press any button to continue..."
 # Is root running this script?
 if [ "$(id -u)" -ne 0 ]; then
     echo -e "\n\nCongratulations! You somehow managed to run this script while not in root, in the archiso! How have you managed that? The archiso should be in root. Are you sure you're running an archiso? I really don't recommend using this script on a live machine.\n\n"
     exit 1
 fi
 
-# Show all available disks
-lsblk -f
-# Prompt user for inputs (and make a newline)
-echo -e "\n" # newline lol
-read -p "Enter the disk to install Arch Linux (e.g. /dev/sda2): " DISK
-read -p "Enter the Hostname for this installation: " HOSTNAME
-read -p "Enter the locale (e.g., en_US.UTF-8): " LOCALE
-read -p "Enter the timezone: " TIMEZONE
-read -p "Enter username for the new user: " USER_NAME
+echo # just a newline
 
-# i have literally no idea how to enable secure boot
-read -p "Do you want secure boot? THIS IS RECOMMENDED (Y/n): " SECURE_BOOT
-
-# Read back inputs
-echo -e "
-DISK     :  ${DISK}
-HOSTNAME :  ${HOSTNAME}
-LOCALE   :  ${LOCALE}
-TIMEZONE :  ${TIMEZONE}
-USERNAME :  ${USER_NAME}
-"
-
-# Prompt user for passwords
+# prompt user for keymaps and set it
+echo -e "\nAvailable keymaps"
+localectl list-keymaps
 
 while true; do
-  read -s -p "Enter password for ${USER_NAME}: " USER_PASSWORD
-  echo
-  read -s -p "Confirm password: " USER_PASSWORD_CONFIRM
-  echo
+    read -p "Enter the keymap you want (e.g. uk, us, de-latin1): " KEYMAP
 
-  if [ "$USER_PASSWORD" = "$USER_PASSWORD_CONFIRM" ]; then
-    break
-  else
-    echo "Passwords do not match. Please try again."
-  fi
+    # does the keymap exist?
+    if localectl list-keymaps | grep -qx "$KEYMAP"; then
+        loadkeys "$KEYMAP"
+        echo "Loaded keymap: ${KEYMAP}"
+        break
+    else
+        echo "Invalid keymap: ${KEYMAP}\n"
+        echo "Try again.\n"
+    fi
 done
 
-# Make sure DISK is correct
-echo "The selected disk is ${DISK}. This will delete all data on this disk."
-read -p "Are you sure you want to continue? (yes/No): " CONFIRM
+sleep 1
 
-# become lowercase, my string! (what is even going on here)
-CONFIRM=$(echo "$CONFIRM" | tr '[:upper:]' '[:lower:]')
+# check if uefi or bios
 
-if [ "$CONFIRM" != "yes" ] && [ "$CONFIRM" != "y" ]; then
-  echo "Operation cancelled."
-  exit 1
+if [ -d /sys/firmware/efi ]; then
+    BOOTMODE="UEFI"
+else
+    BOOTMODE="BIOS"
 fi
+
+echo -e "\nBOOT MODE: ${BOOTMODE}\n"
+
+# timedatectl
+timedatectl set-ntp true
+
+while true; do
+    read -p "Enter the timezone you want (e.g. Europe/London): " TIMEZONE
+
+    # does the keymap exist?
+    if timedatectl list-timezones | grep -qx "$TIMEZONE"; then
+        timedatectl set-timezone "$TIMEZONE"
+        echo "Loaded timezone: ${TIMEZONE}"
+        break
+    else
+        echo "Invalid Timezone: {$TIMEZONE}"
+        echo "Try again."
+    fi
+done
+
+timedatectl

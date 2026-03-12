@@ -1,0 +1,86 @@
+# ok we do the username now
+while true; do
+    read -p "Enter the username you want (e.g. yvseann): " USER_NAME
+
+    # no empty input pls
+    if [[ -z "$USER_NAME" ]]; then
+        echo "Username cannot be empty."
+        continue
+    fi
+
+    # is it valid
+    if [[ "$USER_NAME" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
+        echo "Username accepted: $USER_NAME"
+        break
+    else
+        echo "Invalid username. Usernames must:"
+        echo "  - start with a lowercase letter or underscore"
+        echo "  - contain only lowercase letters, numbers, underscores, or hyphens"
+    fi
+done
+
+
+# Prompt user for passwords
+
+while true; do
+  read -s -p "Enter password for ${USER_NAME}: " USER_PASSWORD
+  echo
+  read -s -p "Confirm password: " USER_PASSWORD_CONFIRM
+  echo
+
+  if [ "$USER_PASSWORD" = "$USER_PASSWORD_CONFIRM" ]; then
+    break
+  else
+    echo "Passwords do not match. Please try again."
+  fi
+done
+
+# Make sure DISK is correct
+echo "The selected disk is ${DISK}. This will delete all data on this disk."
+read -p "Are you sure you want to continue? (yes/No): " CONFIRM
+
+# become lowercase, my string! (what is even going on here)
+CONFIRM=$(echo "$CONFIRM" | tr '[:upper:]' '[:lower:]')
+
+if [ "$CONFIRM" != "yes" ] && [ "$CONFIRM" != "y" ]; then
+  echo "Operation cancelled."
+  exit 1
+fi
+
+
+
+
+
+# echo -e "\nChoose a bootloader:"
+# options=("systemd-boot" "GRUB" "Limine" "Custom" "Cancel")
+# select BOOTLOADER in "${options[@]}"; do
+#     case $BOOTLOADER in
+#         "systemd-boot")
+#             echo "Selected: systemd-boot"
+#             BOOTLOADER="systemd-boot"
+#             break
+#             ;;
+#         "GRUB")
+#             echo "Selected: GRUB"
+#             BOOTLOADER="grub"
+#             break
+#             ;;
+#         "Limine")
+#             echo "Selected: Limine"
+#             BOOTLOADER="limine"
+#             break
+#             ;;
+#         "Custom")
+#             read -p "Enter custom bootloader command or script name: " CUSTOM_BOOTLOADER
+#             BOOTLOADER="custom"
+#             break
+#             ;;
+#         "Cancel")
+#             echo "Bootloader selection cancelled."
+#             exit 1
+#             ;;
+#         *)
+#             echo "Invalid option."
+#             ;;
+#     esac
+#done
