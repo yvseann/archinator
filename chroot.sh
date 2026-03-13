@@ -93,3 +93,42 @@ while true; do
     echo "Root password set successfully."
     break
 done
+
+# Boot loader
+
+while true; do
+      PS3="Choose a bootloader: "
+      select bootloader in "limine" "grub" "systemd-boot" "efistub" "custom"; do
+          case $bootloader in
+              "limine")
+                bootloader="limine"
+                echo "Using limine"
+                break
+                ;;
+              "grub")
+                bootloader="grub"
+                echo "Using grub"
+                break
+                ;;
+              "systemd-boot")
+                bootloader="systemd-boot"
+                echo "Using systemd-boot"
+                break
+                ;;
+              "efistub")
+                bootloader="efistub"
+                echo "Using efistub"
+                break
+                ;;
+              "custom")
+                bootloader="custom"
+                echo "You will be prompted to install your own bootloader at the end of the installation."
+                break
+                ;;
+              *)
+                echo "Invalid selection."
+                ;;
+          esac
+      done
+      break
+done
