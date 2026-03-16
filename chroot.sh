@@ -159,10 +159,13 @@ if [ "$bootloader" = "limine" ]; then
 	ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART") # idfk i just found this
 
 	cat > /boot/limine.conf << EOF
-+/${HOSTNAME} archlinux
+
+timeout: 5
+
+/+${HOSTNAME} archlinux
 	protocol:linux
 	path: boot():/vmlinuz-linux
-	cmdline: root=UUID=$ROOT_UUID rw resume=UUID=$ROOT_UUID
+	cmdline: root=UUID=$ROOT_UUID rw
 	module_path: boot():/initramfs-linux.img
 
 EOF
