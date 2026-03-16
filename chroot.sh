@@ -144,6 +144,9 @@ done
 
 echo "Boot loadering..."
 
+#read -p "Do you want to use secureboot?? (Y/n): " secure_boot
+#secure_boot=${secure_boot:-Y}
+
 if [ "$bootloader" = "limine" ]; then
     if [ "$BOOTMODE" = "UEFI" ]; then
 		pacman -Syu limine efibootmgr --noconfirm
@@ -182,6 +185,10 @@ timeout: 5
 	module_path: boot():/initramfs-linux-lts.img
 
 EOF
+
+	#if [[ "$secure_boot" =~ ^[Yy]$ ]]; then
+	#	pacman -Syu sbctl --noconfirm
+	#fi
 
 fi
 
