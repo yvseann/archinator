@@ -158,32 +158,14 @@ if [ "$bootloader" = "limine" ]; then
 
 	ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART") # idfk i just found this
 
-cat >/boot/limine.cfg <<EOF
-# ============================
-#   Limine Boot Menu
-# ============================
+	cat > /boot/limine.conf << EOF
++/${HOSTNAME} archlinux
+	protocol:linux
+	path: boot():/vmlinuz-linux
+	cmdline: root=UUID=$ROOT_UUID rw resume=UUID=$ROOT_UUID
+	module_path: boot():/initramfs-linux.img
 
-TIMEOUT=5
-DEFAULT_ENTRY=0
-
-# ----------------------------
-#   Arch Linux (main kernel)
-# ----------------------------
-:Arch Linux
-	PROTOCOL=linux
-	KERNEL_PATH=boot:///vmlinuz-linux
-	MODULE_PATH=boot:///initramfs-linux.img
-	CMDLINE=root=UUID=${ROOT_UUID} rw quiet splash loglevel=3
-
-	# ----------------------------
-	#   Arch Linux (LTS kernel)
-	# ----------------------------
-:Arch Linux (LTS)
-	PROTOCOL=linux
-	KERNEL_PATH=boot:///vmlinuz-linux-lts
-	MODULE_PATH=boot:///initramfs-linux-lts.img
-	CMDLINE=root=UUID=${ROOT_UUID} rw quiet splash loglevel=3
-EOF # idk why but the vscode thinks "fi" is part of the eof if this is indented
+EOF
 
 fi
 
