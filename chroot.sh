@@ -27,9 +27,6 @@ while true; do
 
 done
 
-echo "Enabling locale..."
-sed -i "s/^#${LOCALIZATION}/${LOCALIZATION}/" /etc/locale.gen
-
 echo "Setting system default locale..."
 echo "LANG=${LOCALIZATION}" >/etc/locale.conf
 
@@ -62,6 +59,15 @@ while true; do
 		echo "- cannot start or end with a hyphen"
 	fi
 done
+
+# hosts
+
+echo "hosts stuff"
+cat <<EOF >/etc/hosts
+127.0.0.1   localhost
+::1         localhost
+127.0.1.1   ${HOSTNAME}.localdomain ${HOSTNAME}
+EOF
 
 echo "$HOSTNAME" >/etc/hostname
 echo "Hostname ${HOSTNAME} has been set."
@@ -140,7 +146,7 @@ echo "Boot loadering..."
 
 if [ "$bootloader" = "limine" ]; then
     if [ "$BOOTMODE" = "UEFI" ]; then
-		pacman -Sy limine efibootmgr --noconfirm
+		pacman -Syu limine efibootmgr --noconfirm
         mkdir -p /boot/EFI/limine
         cp /usr/share/limine/BOOTX64.EFI /boot/EFI/limine/
 
@@ -152,31 +158,31 @@ if [ "$bootloader" = "limine" ]; then
 
 	ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART") # idfk i just found this
 
-	cat >/boot/limine.cfg <<EOF
-	# ============================
-	#   Limine Boot Menu
-	# ============================
+cat >/boot/limine.cfg <<EOF
+# ============================
+#   Limine Boot Menu
+# ============================
 
-	TIMEOUT=5
-	DEFAULT_ENTRY=0
+TIMEOUT=5
+DEFAULT_ENTRY=0
 
-	# ----------------------------
-	#   Arch Linux (main kernel)
-	# ----------------------------
-	:Arch Linux
-		PROTOCOL=linux
-		KERNEL_PATH=boot:///vmlinuz-linux
-		MODULE_PATH=boot:///initramfs-linux.img
-		CMDLINE=root=UUID=${ROOT_UUID} rw quiet splash loglevel=3
+# ----------------------------
+#   Arch Linux (main kernel)
+# ----------------------------
+:Arch Linux
+	PROTOCOL=linux
+	KERNEL_PATH=boot:///vmlinuz-linux
+	MODULE_PATH=boot:///initramfs-linux.img
+	CMDLINE=root=UUID=${ROOT_UUID} rw quiet splash loglevel=3
 
 	# ----------------------------
 	#   Arch Linux (LTS kernel)
 	# ----------------------------
-	:Arch Linux (LTS)
-		PROTOCOL=linux
-		KERNEL_PATH=boot:///vmlinuz-linux-lts
-		MODULE_PATH=boot:///initramfs-linux-lts.img
-		CMDLINE=root=UUID=${ROOT_UUID} rw quiet splash loglevel=3
+:Arch Linux (LTS)
+	PROTOCOL=linux
+	KERNEL_PATH=boot:///vmlinuz-linux-lts
+	MODULE_PATH=boot:///initramfs-linux-lts.img
+	CMDLINE=root=UUID=${ROOT_UUID} rw quiet splash loglevel=3
 EOF # idk why but the vscode thinks "fi" is part of the eof if this is indented
 
 fi
