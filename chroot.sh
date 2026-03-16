@@ -187,4 +187,4 @@ fi
 
 
 
-# todo: encryption, secureboot, users, desktop environment
+# todo: encryption, secureboot, users, desktop environment, bios and other bootloaders
