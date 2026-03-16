@@ -17,13 +17,14 @@ while true; do
 	read -p "Enter the locale you want (e.g. en_GB.UTF-8, en_US.UTF-8): " LOCALIZATION
 
 	# check if locale exists in locale.gen
-	if grep -q "^#\?${LOCALIZATION} " /etc/locale.gen; then
-		echo "Locale valid: ${LOCALIZATION}"
+	if grep -q "^#\?${LOCALIZATION}\b" /etc/locale.gen; then
+    	echo "Locale valid: ${LOCALIZATION}"
+    	sed -i "s/^#\?\(${LOCALIZATION}\b.*\)/\1/" /etc/locale.gen
 		break
 	else
-		echo "Invalid locale: ${LOCALIZATION}"
-		echo "Try again."
+    	echo "Invalid locale: ${LOCALIZATION}"
 	fi
+
 done
 
 echo "Enabling locale..."
@@ -132,3 +133,51 @@ while true; do
 	done
 	break
 done
+
+# set up bootloader
+
+echo "Boot loadering..."
+
+if [ "$bootloader" = "limine" ]; then
+    if [ "$BOOTMODE" = "UEFI" ]; then
+		pacman -Sy limine efibootmgr --noconfirm
+        mkdir -p /boot/EFI/limine
+        cp /usr/share/limine/BOOTX64.EFI /boot/EFI/limine/
+
+        efibootmgr --create --disk ${installation_disk} --part 1 \
+      		--label "${HOSTNAME} Limine Bootloader" \
+      		--loader '\EFI\limine\BOOTX64.EFI' \
+      		--unicode
+    fi
+
+	ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART") # idfk i just found this
+
+	cat >/boot/limine.cfg <<EOF
+	# ============================
+	#   Limine Boot Menu
+	# ============================
+
+	TIMEOUT=5
+	DEFAULT_ENTRY=0
+
+	# ----------------------------
+	#   Arch Linux (main kernel)
+	# ----------------------------
+	:Arch Linux
+		PROTOCOL=linux
+		KERNEL_PATH=boot:///vmlinuz-linux
+		MODULE_PATH=boot:///initramfs-linux.img
+		CMDLINE=root=UUID=${ROOT_UUID} rw quiet splash loglevel=3
+
+	# ----------------------------
+	#   Arch Linux (LTS kernel)
+	# ----------------------------
+	:Arch Linux (LTS)
+		PROTOCOL=linux
+		KERNEL_PATH=boot:///vmlinuz-linux-lts
+		MODULE_PATH=boot:///initramfs-linux-lts.img
+		CMDLINE=root=UUID=${ROOT_UUID} rw quiet splash loglevel=3
+EOF # idk why but the vscode thinks "fi" is part of the eof if this is indented
+
+fi
+

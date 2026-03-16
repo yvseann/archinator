@@ -242,4 +242,12 @@ echo "chrooting into /mnt..."
 read -n 1 -s -p "Press any key to continue..."
 cp chroot.sh /mnt
 chmod +x /mnt/chroot.sh
-arch-chroot /mnt /bin/bash -c "export TIMEZONE='$TIMEZONE' KEYMAP='$KEYMAP'; /chroot.sh"
+arch-chroot /mnt /bin/bash -c "
+	export TIMEZONE='$TIMEZONE'
+	export KEYMAP='$KEYMAP'
+	export BOOTMODE='$BOOTMODE'
+	export installation_disk='$installation_disk'
+	export ROOT_PART='$ROOT_PART'
+
+	/chroot.sh
+"
