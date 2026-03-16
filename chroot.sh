@@ -160,6 +160,13 @@ if [ "$bootloader" = "limine" ]; then
 
 	cat > /boot/limine.conf << EOF
 
+term_palette: 1e1e2e;f38ba8;a6e3a1;f9e2af;89b4fa;f5c2e7;94e2d5;cdd6f4
+term_palette_bright: 585b70;f38ba8;a6e3a1;f9e2af;89b4fa;f5c2e7;94e2d5;cdd6f4
+term_background: 1e1e2e
+term_foreground: cdd6f4
+term_background_bright: 585b70
+term_foreground_bright: cdd6f4
+
 timeout: 5
 
 /+${HOSTNAME} archlinux
@@ -168,7 +175,16 @@ timeout: 5
 	cmdline: root=UUID=$ROOT_UUID rw
 	module_path: boot():/initramfs-linux.img
 
+/+${HOSTNAME} archlinux-lts
+	protocol:linux
+	path: boot():/vmlinuz-linux-lts
+	cmdline: root=UUID=$ROOT_UUID rw
+	module_path: boot():/initramfs-linux-lts.img
+
 EOF
 
 fi
 
+
+
+# todo: encryption, secureboot, users, desktop environment
