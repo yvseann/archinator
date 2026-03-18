@@ -72,9 +72,17 @@ EOF
 echo "$HOSTNAME" >/etc/hostname
 echo "Hostname ${HOSTNAME} has been set."
 
-# Initramfs
+#luks
+
+if [[ "$luks_encryption" =~ ^[Yy]$ ]]; then
+    echo "Enabling LUKS support in initramfs..."
+    sed -i 's/^HOOKS="\(.*\)"/HOOKS="\1 encrypt"/' /etc/mkinitcpio.conf
+fi
+
+# initramfs
 
 mkinitcpio -P
+
 
 # Root Password
 
@@ -161,6 +169,12 @@ if [ "$bootloader" = "limine" ]; then
 
 	ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART") # idfk i just found this
 
+	if [[ "$luks_encryption" =~ ^[Yy]$ ]]; then
+    	KERNEL_CMDLINE="cryptdevice=UUID=$ROOT_UUID:cryptroot root=/dev/mapper/cryptroot rw"
+	else
+    	KERNEL_CMDLINE="root=UUID=$ROOT_UUID rw"
+	fi
+
 	cat > /boot/limine.conf << EOF
 
 term_palette: 1e1e2e;f38ba8;a6e3a1;f9e2af;89b4fa;f5c2e7;94e2d5;cdd6f4
@@ -175,13 +189,13 @@ timeout: 5
 /+${HOSTNAME} archlinux
 	protocol:linux
 	path: boot():/vmlinuz-linux
-	cmdline: root=UUID=$ROOT_UUID rw
+	cmdline: $KERNEL_CMDLINE
 	module_path: boot():/initramfs-linux.img
 
 /+${HOSTNAME} archlinux-lts
 	protocol:linux
 	path: boot():/vmlinuz-linux-lts
-	cmdline: root=UUID=$ROOT_UUID rw
+	cmdline: $KERNEL_CMDLINE
 	module_path: boot():/initramfs-linux-lts.img
 
 EOF
@@ -194,4 +208,4 @@ fi
 
 
 
-# todo: encryption, secureboot, users, desktop environment, bios and other bootloaders
+# todo: encryption, secureboot, users, desktop environment, bios, other bootloaders, windows

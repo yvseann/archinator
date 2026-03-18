@@ -132,6 +132,9 @@ if [ "$confirm" != "YES" ]; then
 	exit 1
 fi
 
+read -p "Do you want to use LUKS encrption? (Y/n): " luks_encryption
+luks_encryption=${luks_encryption:-Y}
+
 echo "Partitioning disk: $installation_disk"
 
 wipefs -af "$installation_disk"
@@ -155,6 +158,15 @@ else
 	ROOT_PART="${installation_disk}2"
 fi
 
+if [[ "$luks_encryption" =~ ^[Yy]$ ]]; then
+	echo "Encrypting root partition with LUKS..."
+	cryptsetup luksFormat "$ROOT_PART"
+	cryptsetup open "$ROOT_PART" cryptroot
+	MAPPED_ROOT="/dev/mapper/cryptroot"
+else
+	MAPPED_ROOT="$ROOT_PART"
+fi
+
 # format partitions
 echo "Formatting partitions..."
 
@@ -163,9 +175,9 @@ if [ "$BOOTMODE" = "UEFI" ]; then
 fi
 
 if [ "$filesystem" = "ext4" ]; then
-	mkfs.ext4 "$ROOT_PART"
+	mkfs.ext4 "$MAPPED_ROOT"
 elif [ "$filesystem" = "btrfs" ]; then
-	mkfs.btrfs -f "$ROOT_PART"
+	mkfs.btrfs -f "$MAPPED_ROOT"
 fi
 
 #mount partitions
@@ -177,21 +189,21 @@ if [ "$filesystem" = "ext4" ]; then
 		mkdir -p /mnt/boot
 		mount "$BOOT_PART" /mnt/boot
 	fi
+fi
 
-elif [ "$filesystem" = "btrfs" ]; then
-	mount "$ROOT_PART" /mnt
-	btrfs subvolume create /mnt/@
-	btrfs subvolume create /mnt/@home
-	umount /mnt
-	mount -o subvol=@ "$ROOT_PART" /mnt
-	mkdir -p /mnt/home
+#mount partitions
+echo "Mounting partitions..."
+
+if [ "$filesystem" = "ext4" ]; then
+	mount "$MAPPED_ROOT" /mnt
 	if [ "$BOOTMODE" = "UEFI" ]; then
 		mkdir -p /mnt/boot
-	fi
-	mount -o subvol=@home "$ROOT_PART" /mnt/home
-	if [ "$BOOTMODE" = "UEFI" ]; then
 		mount "$BOOT_PART" /mnt/boot
 	fi
+
+elif [ "$filesystem" = "btrfs" ]; then
+	echo "I DONT WORK YET!!!"
+	exit 1
 fi
 
 # swapfile
@@ -248,6 +260,7 @@ arch-chroot /mnt /bin/bash -c "
 	export BOOTMODE='$BOOTMODE'
 	export installation_disk='$installation_disk'
 	export ROOT_PART='$ROOT_PART'
+	export luks_encryption='$luks_encryption'
 
 	/chroot.sh
 "
