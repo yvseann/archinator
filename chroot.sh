@@ -208,4 +208,4 @@ fi
 
 
 
-# todo: encryption, secureboot, users, desktop environment, bios, other bootloaders, windows
+# todo: secureboot, users, desktop environment, bios, other bootloaders, windows

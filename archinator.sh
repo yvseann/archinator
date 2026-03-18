@@ -184,7 +184,7 @@ fi
 echo "Mounting partitions..."
 
 if [ "$filesystem" = "ext4" ]; then
-	mount "$ROOT_PART" /mnt
+	mount "$MAPPED_ROOT" /mnt
 	if [ "$BOOTMODE" = "UEFI" ]; then
 		mkdir -p /mnt/boot
 		mount "$BOOT_PART" /mnt/boot
