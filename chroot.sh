@@ -240,10 +240,10 @@ fi
 
 # temp stuff because yes.
 
-pacman -Syu xfce4 xfce4-goodies gvfs gvfs-smb network-manager-applet ly --noconfirm
+pacman -Syu xfce4 alacritty network-manager-applet ly --noconfirm
 systemctl enable NetworkManager
 
-pacman -Syu ly brightnessctl durdraw --noconfirm
+pacman -Syu ly brightnessctl --noconfirm
 systemctl enable ly@tty1.service
 systemctl disable getty@tt1.service
 
