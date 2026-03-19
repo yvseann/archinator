@@ -186,11 +186,11 @@ term_foreground_bright: cdd6f4
 
 timeout: 5
 
-/+${HOSTNAME} archlinux
+/+${HOSTNAME} archlinux-zen
 	protocol:linux
-	path: boot():/vmlinuz-linux
+	path: boot():/vmlinuz-linux-zen
 	cmdline: $KERNEL_CMDLINE
-	module_path: boot():/initramfs-linux.img
+	module_path: boot():/initramfs-zen.img
 
 /+${HOSTNAME} archlinux-lts
 	protocol:linux
