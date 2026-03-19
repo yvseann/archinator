@@ -60,7 +60,7 @@ sleep 1 # go to sleep
 timedatectl set-ntp true
 
 echo -e "About to show all valid timezones. Once you have picked a timezone press Q to enter the timezone you wish to use."
-read -n 1 -s -p "Press any key to continue..."IIIIII
+read -n 1 -s -p "Press any key to continue..."
 
 timedatectl list-timezones
 while true; do
@@ -189,17 +189,6 @@ if [ "$filesystem" = "ext4" ]; then
 		mkdir -p /mnt/boot
 		mount "$BOOT_PART" /mnt/boot
 	fi
-fi
-
-#mount partitions
-echo "Mounting partitions..."
-
-if [ "$filesystem" = "ext4" ]; then
-	mount "$MAPPED_ROOT" /mnt
-	if [ "$BOOTMODE" = "UEFI" ]; then
-		mkdir -p /mnt/boot
-		mount "$BOOT_PART" /mnt/boot
-	fi
 
 elif [ "$filesystem" = "btrfs" ]; then
 	echo "I DONT WORK YET!!!"
@@ -243,7 +232,7 @@ fi
 
 echo "Pacstraping to mnt: base, linux-zen, linux-lts, linux-firmware, base-devel. ${MICROCODE}"
 sleep 0.1
-pacstrap -K /mnt base linux linux-lts linux-firmware base-devel $MICROCODE --noconfirm
+pacstrap -K /mnt base linux-zen linux-lts linux-firmware base-devel $MICROCODE --noconfirm
 
 # configure the system
 echo "Generating fstab..."

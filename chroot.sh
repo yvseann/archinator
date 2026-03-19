@@ -76,7 +76,7 @@ echo "Hostname ${HOSTNAME} has been set."
 
 if [[ "$luks_encryption" =~ ^[Yy]$ ]]; then
     echo "Enabling LUKS support in initramfs..."
-    sed -i 's/^HOOKS="\(.*\)"/HOOKS="\1 encrypt"/' /etc/mkinitcpio.conf
+    sed -i 's/\(block\)/\1 keyboard encrypt/' /etc/mkinitcpio.conf
 fi
 
 # initramfs
@@ -108,6 +108,39 @@ while true; do
 	echo "Root password set successfully."
 	break
 done
+
+#user
+
+echo "Username pls"
+
+while true; do
+	read -p "Enter username (e.g. yvseann): " NEWUSER
+
+	if [[ -z "$NEWUSER" ]]; then
+		echo "Username cannot be empty."
+		continue
+	fi
+
+	# lowercase, alphanumer, underscore, hyphen
+
+	if [[ "$NEWUSER" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
+		echo "Username granted: $NEWUSER"
+		break
+	else
+		echo -e "Invalid username.\nRules:\n- lowercase letters, digits, underscores, hyphens\n- cannot start with a digit"
+	fi
+done
+
+useradd -m -G wheel -s /bin/bash "$NEWUSER"
+
+echo "Set password for $NEWUSER"
+passwd "$NEWUSER"
+
+echo "Configuring sudo..."
+
+sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+
+echo "Sudo configured: wheel group thingied"
 
 # Boot loader
 
@@ -190,7 +223,7 @@ timeout: 5
 	protocol:linux
 	path: boot():/vmlinuz-linux-zen
 	cmdline: $KERNEL_CMDLINE
-	module_path: boot():/initramfs-zen.img
+	module_path: boot():/initramfs-linux-zen.img
 
 /+${HOSTNAME} archlinux-lts
 	protocol:linux
@@ -205,6 +238,14 @@ EOF
 	#fi
 
 fi
+
+# temp stuff because yes.
+
+pacman -Syu xfce4 xfce4-goodies gvfs gvfs-smb network-manager-applet ly --noconfirm
+systemctl enable NetworkManager
+
+pacman -Syu ly --noconfirm
+systemctl enable ly.service
 
 
 
