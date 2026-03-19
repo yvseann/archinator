@@ -18,11 +18,11 @@ while true; do
 
 	# check if locale exists in locale.gen
 	if grep -q "^#\?${LOCALIZATION}\b" /etc/locale.gen; then
-    	echo "Locale valid: ${LOCALIZATION}"
-    	sed -i "s/^#\?\(${LOCALIZATION}\b.*\)/\1/" /etc/locale.gen
+		echo "Locale valid: ${LOCALIZATION}"
+		sed -i "s/^#\?\(${LOCALIZATION}\b.*\)/\1/" /etc/locale.gen
 		break
 	else
-    	echo "Invalid locale: ${LOCALIZATION}"
+		echo "Invalid locale: ${LOCALIZATION}"
 	fi
 
 done
@@ -75,14 +75,13 @@ echo "Hostname ${HOSTNAME} has been set."
 #luks
 
 if [[ "$luks_encryption" =~ ^[Yy]$ ]]; then
-    echo "Enabling LUKS support in initramfs..."
-    sed -i 's/\(block\)/\1 keyboard encrypt/' /etc/mkinitcpio.conf
+	echo "Enabling LUKS support in initramfs..."
+	sed -i 's/\(block\)/\1 keyboard encrypt/' /etc/mkinitcpio.conf
 fi
 
 # initramfs
 
 mkinitcpio -P
-
 
 # Root Password
 
@@ -189,26 +188,26 @@ echo "Boot loadering..."
 #secure_boot=${secure_boot:-Y}
 
 if [ "$bootloader" = "limine" ]; then
-    if [ "$BOOTMODE" = "UEFI" ]; then
+	if [ "$BOOTMODE" = "UEFI" ]; then
 		pacman -Syu limine efibootmgr --noconfirm
-        mkdir -p /boot/EFI/limine
-        cp /usr/share/limine/BOOTX64.EFI /boot/EFI/limine/
+		mkdir -p /boot/EFI/limine
+		cp /usr/share/limine/BOOTX64.EFI /boot/EFI/limine/
 
-        efibootmgr --create --disk ${installation_disk} --part 1 \
-      		--label "${HOSTNAME} Limine Bootloader" \
-      		--loader '\EFI\limine\BOOTX64.EFI' \
-      		--unicode
-    fi
+		efibootmgr --create --disk ${installation_disk} --part 1 \
+			--label "${HOSTNAME} Limine Bootloader" \
+			--loader '\EFI\limine\BOOTX64.EFI' \
+			--unicode
+	fi
 
 	ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART") # idfk i just found this
 
 	if [[ "$luks_encryption" =~ ^[Yy]$ ]]; then
-    	KERNEL_CMDLINE="cryptdevice=UUID=$ROOT_UUID:cryptroot root=/dev/mapper/cryptroot rw"
+		KERNEL_CMDLINE="cryptdevice=UUID=$ROOT_UUID:cryptroot root=/dev/mapper/cryptroot rw"
 	else
-    	KERNEL_CMDLINE="root=UUID=$ROOT_UUID rw"
+		KERNEL_CMDLINE="root=UUID=$ROOT_UUID rw"
 	fi
 
-	cat > /boot/limine.conf << EOF
+	cat >/boot/limine.conf <<EOF
 
 term_palette: 1e1e2e;f38ba8;a6e3a1;f9e2af;89b4fa;f5c2e7;94e2d5;cdd6f4
 term_palette_bright: 585b70;f38ba8;a6e3a1;f9e2af;89b4fa;f5c2e7;94e2d5;cdd6f4
@@ -244,9 +243,8 @@ fi
 pacman -Syu xfce4 xfce4-goodies gvfs gvfs-smb network-manager-applet ly --noconfirm
 systemctl enable NetworkManager
 
-pacman -Syu ly --noconfirm
-systemctl enable ly.service
-
-
+pacman -Syu ly brightnessctl durdraw --noconfirm
+systemctl enable ly@tty1.service
+systemctl disable getty@tt1.service
 
 # todo: secureboot, users, desktop environment, bios, other bootloaders, windows
