@@ -231,6 +231,7 @@ term_foreground_bright: cdd6f4
 
 timeout: 5
 
+/this is a test i think
 /+${HOSTNAME} archlinux-zen
 	protocol:linux
 	path: boot():/vmlinuz-linux-zen
@@ -251,7 +252,7 @@ EOF
 
 	if [ "$windows_exists" = true ]; then
 cat >> /boot/limine.conf << EOF
-/ Windows Boot Manager
+/+Windows Boot Manager
 	protocol: chainload
 	path: boot():/EFI/Microsoft/bootmgfw.efi
 EOF
