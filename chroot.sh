@@ -191,6 +191,15 @@ echo "Boot loadering..."
 #read -p "Do you want to use secureboot?? (Y/n): " secure_boot
 #secure_boot=${secure_boot:-Y}
 
+echo "Checking if windows exists..."
+if [ -f /boot/EFI/Microsoft/Boot/bootmgfw.efi ]; then
+    windows_exists=true
+	echo "Windows exists, will create boot option."
+else
+    windows_exists=false
+	echo "Windows does not exist. Will not create boot option"
+fi
+
 if [ "$bootloader" = "limine" ]; then
 	if [ "$BOOTMODE" = "UEFI" ]; then
 		pacman -Syu limine efibootmgr --noconfirm
@@ -240,6 +249,13 @@ EOF
 	#	pacman -Syu sbctl --noconfirm
 	#fi
 
+	if [ "$windows_exists" = true ]; then
+cat >> /boot/limine.conf << EOF
+/ Windows Boot Manager
+	protocol: chainload
+	path: boot():/EFI/Microsoft/bootmgfw.efi
+EOF
+	fi
 fi
 
 # temp stuff because yes.
@@ -251,4 +267,4 @@ pacman -Syu ly brightnessctl --noconfirm
 systemctl enable ly@tty1.service
 systemctl disable getty@tt1.service
 
-# todo: secureboot, users, desktop environment, bios, other bootloaders, windows
+# todo: secureboot, desktop environment, bios, other bootloaders
