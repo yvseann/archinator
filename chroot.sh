@@ -244,7 +244,7 @@ fi
 
 # temp stuff because yes.
 
-pacman -Syu xfce4 alacritty network-manager-applet ly --noconfirm
+pacman -Syu xfce4 xorg-server xorg-xinit alacritty network-manager-applet ly --noconfirm
 systemctl enable NetworkManager
 
 pacman -Syu ly brightnessctl --noconfirm
