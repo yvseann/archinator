@@ -206,7 +206,7 @@ if [ "$bootloader" = "limine" ]; then
 	ROOT_UUID=$(blkid -s UUID -o value "$ROOT_PART") # idfk i just found this
 
 	if [[ "$luks_encryption" =~ ^[Yy]$ ]]; then
-		KERNEL_CMDLINE="rd.luks.uuid=$ROOT_UUID:cryptroot root=/dev/mapper/cryptroot rw"
+		KERNEL_CMDLINE="rd.luks.name=$ROOT_UUID=cryptroot root=/dev/mapper/cryptroot rw"
 	else
 		KERNEL_CMDLINE="root=UUID=$ROOT_UUID rw"
 	fi
