@@ -16,11 +16,13 @@ This project is provided “as is” with no warranty. Use at your own risk.
 
 ## Features  
 
-- INSTALL ARCH (SOON. IT DOESN'T EVEN DO THAT YET. IT IS LITERALLY A GLORIFIED OPTIONS CHOOSER WHICH THEN DOES NOTHING. as of now. maybe if i stick with this project.)
+- INSTALL ARCH
 
 ## Lessons Learned  
 
-bash. i learned bash. kinda i still suck at it. because this project is barely even done yet and it's just something im doing in my spare time at school
+bash. i learned bash. kinda i still suck at it though.
+
+I also learned ai fucking sucks, documentation is way fucking better to diagnose your problems
 
 ## INSTALL TO ARCHISO
 
@@ -56,6 +58,14 @@ I am not liable for anything being fucked up.
 * **No root permissions**: Why do you not have root? You are literally on the archiso. How did this happen? Are you running the script on the archiso? I don't recommend running it on anything else. That might end badly. Run it on the archiso or figure out why you don't have root permissions on the archiso.
 * **Not installing arch**: Yeah it's not done yet as said above its a glorified text-based story game except its extremely bad.
 * **Anything else**: idfk man
+
+Encryption: doesn't unlock on boot, unsure if it does now,I can't test
+
+only limine works: I haven't implemented the rest yet
+
+I don't get to chose my DE: not yet.
+
+forgot anything? make an issue and maybe fix it for me
 
 ## Feedback  
 
