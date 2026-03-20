@@ -74,13 +74,17 @@ echo "Hostname ${HOSTNAME} has been set."
 
 #luks
 
+# LUKS and initramfs
 if [[ "$luks_encryption" =~ ^[Yy]$ ]]; then
-	echo "Enabling LUKS support in initramfs..."
-	sed -i 's/\(block\)/\1 keyboard encrypt/' /etc/mkinitcpio.conf
+	echo "Configuring mkinitcpio for LUKS"
+
+	sed -i 's/^HOOKS=.*/HOOKS=(base systemd autodetect modconf block keyboard sd-vconsole sd-encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+else
+	echo "Configuring mkinitcpio for non-encrypted root..."
+	sed -i 's/^HOOKS=.*/HOOKS=(base systemd autodetect modconf block filesystems fsck)/' /etc/mkinitcpio.conf
 fi
 
-# initramfs
-
+echo "Generating initramfs..."
 mkinitcpio -P
 
 # Root Password
