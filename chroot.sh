@@ -232,13 +232,19 @@ term_foreground_bright: cdd6f4
 timeout: 5
 
 /this is a test i think
-/+${HOSTNAME} archlinux-zen
+/+${HOSTNAME} archlinux-zen (RECOMMENDED FOR GAMING OPTIMIZATIONS)
 	protocol:linux
 	path: boot():/vmlinuz-linux-zen
 	cmdline: $KERNEL_CMDLINE
 	module_path: boot():/initramfs-linux-zen.img
 
-/+${HOSTNAME} archlinux-lts
+/+${HOSTNAME} archlinux linux
+	protocol:linux
+	path: boot():/vmlinuz-linux-lts
+	cmdline: $KERNEL_CMDLINE
+	module_path: boot():/initramfs-linux.img
+
+/+${HOSTNAME} archlinux linux-lts
 	protocol:linux
 	path: boot():/vmlinuz-linux-lts
 	cmdline: $KERNEL_CMDLINE
@@ -246,17 +252,47 @@ timeout: 5
 
 EOF
 
-	#if [[ "$secure_boot" =~ ^[Yy]$ ]]; then
-	#	pacman -Syu sbctl --noconfirm
-	#fi
-
 	if [ "$windows_exists" = true ]; then
 cat >> /boot/limine.conf << EOF
+/Windows
 /+Windows Boot Manager
 	protocol: chainload
 	path: boot():/EFI/Microsoft/bootmgfw.efi
 EOF
 	fi
+fi
+
+# secureboot
+read -p "Do you want Secure Boot?? YOU SHOULD RESET SECUREBOOT KEYS IN BIOS BEFOREHAND.(Y/n): " secure_boot
+secure_boot=${secure_boot:-Y}
+
+if [[ "$secure_boot" =~ ^[Yy]$ ]]; then
+    echo "Enabling secure boot with microsoft enrollment keys.. "
+	pacman -S sbctl --noconfirm
+	sbctl create-keys
+	sbctl enroll-keys --microsoft
+	sbctl sign -s /boot/EFI/limine/BOOTX64.EFI
+
+	sbctl sign -s /boot/vmlinuz-linux
+	sbctl sign -s /boot/initramfs-linux.img
+	sbctl sign -s /boot/initramfs-linux-fallback.img
+
+
+	sbctl sign -s /boot/vmlinuz-linux-lts
+	sbctl sign -s /boot/initramfs-linux-lts.img
+	sbctl sign -s /boot/initramfs-linux-lts-fallback.img
+
+
+	sbctl sign -s /boot/vmlinuz-linux-zen
+	sbctl sign -s /boot/initramfs-linux-zen.img
+	sbctl sign -s /boot/initramfs-linux-zen-fallback.img
+
+
+	echo "Verified... You are good to enable secureboot... If you reset secureboot keys before installation."
+	sbctl verify
+
+else
+    echo "ok."
 fi
 
 # temp stuff because yes.
@@ -266,6 +302,6 @@ systemctl enable NetworkManager
 
 pacman -Syu ly brightnessctl --noconfirm
 systemctl enable ly@tty1.service
-systemctl disable getty@tt1.service
+systemctl disable getty@tty1.service
 
-# todo: secureboot, desktop environment, bios, other bootloaders
+# todo: desktop environment (OPTIONS), bios, other bootloaders

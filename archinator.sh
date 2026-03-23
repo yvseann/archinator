@@ -21,6 +21,7 @@ SSS    S*S  S*S    SSS    YSSP  SSS    S*S  S*S  S*S    SSS  SSS    S*S       S*
 ARCHINATOR - A SCRIPT SOME RANDOM KID MADE BECAUSE THEY WERE BORED!
 
 if you want to change your console font do that before running this script.
+Additionally, if you want to include secureboot, please reset your firmware keys in bios before running this script.
 EOF
 
 read -n 1 -s -p "Press any key to continue..."
