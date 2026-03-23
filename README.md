@@ -56,10 +56,10 @@ I am not liable for anything being fucked up.
 ## Issues
 
 * **No root permissions**: Why do you not have root? You are literally on the archiso. How did this happen? Are you running the script on the archiso? I don't recommend running it on anything else. That might end badly. Run it on the archiso or figure out why you don't have root permissions on the archiso.
-* **Not installing arch**: Yeah it's not done yet as said above its a glorified text-based story game except its extremely bad.
-* **Anything else**: idfk man
 
-Encryption: doesn't unlock on boot, unsure if it does now,I can't test
+* **Secureboot not working**: Have you reset the firmware keys in the bios first?
+
+* **Anything else**: idfk man
 
 only limine works: I haven't implemented the rest yet
 
