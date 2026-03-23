@@ -193,10 +193,10 @@ echo "Boot loadering..."
 
 echo "Checking if windows exists..."
 if [ -f /boot/EFI/Microsoft/Boot/bootmgfw.efi ]; then
-    windows_exists=true
+	windows_exists=true
 	echo "Windows exists, will create boot option."
 else
-    windows_exists=false
+	windows_exists=false
 	echo "Windows does not exist. Will not create boot option"
 fi
 
@@ -240,7 +240,7 @@ timeout: 5
 
 /+${HOSTNAME} archlinux linux
 	protocol:linux
-	path: boot():/vmlinuz-linux-lts
+	path: boot():/vmlinuz-linux
 	cmdline: $KERNEL_CMDLINE
 	module_path: boot():/initramfs-linux.img
 
@@ -253,7 +253,7 @@ timeout: 5
 EOF
 
 	if [ "$windows_exists" = true ]; then
-cat >> /boot/limine.conf << EOF
+		cat >>/boot/limine.conf <<EOF
 /Windows
 /+Windows Boot Manager
 	protocol: chainload
@@ -267,8 +267,8 @@ read -p "Do you want Secure Boot?? YOU SHOULD RESET SECUREBOOT KEYS IN BIOS BEFO
 secure_boot=${secure_boot:-Y}
 
 if [[ "$secure_boot" =~ ^[Yy]$ ]]; then
-    echo "Enabling secure boot with microsoft enrollment keys.. "
-	pacman -S sbctl --noconfirm
+	echo "Enabling secure boot with microsoft enrollment keys.. "
+	pacman -Syu sbctl --noconfirm
 	sbctl create-keys
 	sbctl enroll-keys --microsoft
 	sbctl sign -s /boot/EFI/limine/BOOTX64.EFI
@@ -277,31 +277,50 @@ if [[ "$secure_boot" =~ ^[Yy]$ ]]; then
 	sbctl sign -s /boot/initramfs-linux.img
 	sbctl sign -s /boot/initramfs-linux-fallback.img
 
-
 	sbctl sign -s /boot/vmlinuz-linux-lts
 	sbctl sign -s /boot/initramfs-linux-lts.img
 	sbctl sign -s /boot/initramfs-linux-lts-fallback.img
-
 
 	sbctl sign -s /boot/vmlinuz-linux-zen
 	sbctl sign -s /boot/initramfs-linux-zen.img
 	sbctl sign -s /boot/initramfs-linux-zen-fallback.img
 
-
 	echo "Verified... You are good to enable secureboot... If you reset secureboot keys before installation."
 	sbctl verify
 
 else
-    echo "ok."
+	echo "ok."
 fi
+
+# enable multilib and chaotic-aur
+
+sed -i '/^
+
+\[multilib\]
+
+/,/^Include/ s/^#//' /etc/pacman.conf
+
+pacman -Syu chaotic-keyring chaotic-mirrorlist --noconfirmI
+
+pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com --noconfirm
+pacman-key --lsign-key 3056513887B78AEB --noconfirm
+
+cat >>/etc/pacman.conf <<EOF
+[chaotic-aur]
+Include = /etc/pacman.d/chaotic-mirrorlist
+EOF
+
+pacman -Syu
 
 # temp stuff because yes.
 
 pacman -Syu xfce4 xorg-server xorg-xinit alacritty network-manager-applet ly --noconfirm
 systemctl enable NetworkManager
 
-pacman -Syu ly brightnessctl --noconfirm
-systemctl enable ly@tty1.service
-systemctl disable getty@tty1.service
+pacman -Syu ly brightnessctl paru --noconfirm
+systemctl enable ly@tty1.service --noconfirm
+systemctl disable getty@tty1.service --noconfirm
 
-# todo: desktop environment (OPTIONS), bios, other bootloaders
+pacman -Syu paru librewolf --noconfirm
+
+# todo: desktop environment (OPTIONS), bios, other bootloaders, paru or yay option
