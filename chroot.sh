@@ -231,20 +231,19 @@ term_foreground_bright: cdd6f4
 
 timeout: 5
 
-/this is a test i think
 /+${HOSTNAME} archlinux-zen (RECOMMENDED FOR GAMING OPTIMIZATIONS)
 	protocol:linux
 	path: boot():/vmlinuz-linux-zen
 	cmdline: $KERNEL_CMDLINE
 	module_path: boot():/initramfs-linux-zen.img
 
-/+${HOSTNAME} archlinux linux
+/${HOSTNAME} archlinux linux
 	protocol:linux
 	path: boot():/vmlinuz-linux
 	cmdline: $KERNEL_CMDLINE
 	module_path: boot():/initramfs-linux.img
 
-/+${HOSTNAME} archlinux linux-lts
+/${HOSTNAME} archlinux linux-lts
 	protocol:linux
 	path: boot():/vmlinuz-linux-lts
 	cmdline: $KERNEL_CMDLINE
@@ -302,8 +301,8 @@ sed -i '/^
 
 pacman -Syu chaotic-keyring chaotic-mirrorlist --noconfirmI
 
-pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com --noconfirm
-pacman-key --lsign-key 3056513887B78AEB --noconfirm
+pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key 3056513887B78AEB
 
 cat >>/etc/pacman.conf <<EOF
 [chaotic-aur]
@@ -314,12 +313,12 @@ pacman -Syu
 
 # temp stuff because yes.
 
-pacman -Syu xfce4 xorg-server xorg-xinit alacritty network-manager-applet ly --noconfirm
+pacman -Syu xfce4 xorg-server xorg-xinit alacritty network-manager-applet NetworkManager ly --noconfirm
 systemctl enable NetworkManager
 
 pacman -Syu ly brightnessctl paru --noconfirm
-systemctl enable ly@tty1.service --noconfirm
-systemctl disable getty@tty1.service --noconfirm
+systemctl enable ly@tty1.service
+systemctl disable getty@tty1.service
 
 pacman -Syu paru librewolf --noconfirm
 
