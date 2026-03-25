@@ -300,12 +300,12 @@ pacman -Syu
 
 # temp stuff because yes.
 
-pacman -Syu xfce4 xorg-server xorg-xinit alacritty network-manager-applet ly --noconfirm
+pacman -Syu xfce4 xorg-server xorg-xinit alacritty network-manager-applet ly git --noconfirm
 
 pacman -Syu ly brightnessctl paru --noconfirm
 systemctl enable ly@tty1.service
 systemctl disable getty@tty1.service
 
-pacman -Syu paru librewolf --noconfirm
+
 
 # todo: desktop environment (OPTIONS), bios, other bootloaders, paru or yay option
