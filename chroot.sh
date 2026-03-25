@@ -274,15 +274,12 @@ if [[ "$secure_boot" =~ ^[Yy]$ ]]; then
 
 	sbctl sign -s /boot/vmlinuz-linux
 	sbctl sign -s /boot/initramfs-linux.img
-	sbctl sign -s /boot/initramfs-linux-fallback.img
 
 	sbctl sign -s /boot/vmlinuz-linux-lts
 	sbctl sign -s /boot/initramfs-linux-lts.img
-	sbctl sign -s /boot/initramfs-linux-lts-fallback.img
 
 	sbctl sign -s /boot/vmlinuz-linux-zen
 	sbctl sign -s /boot/initramfs-linux-zen.img
-	sbctl sign -s /boot/initramfs-linux-zen-fallback.img
 
 	echo "Verified... You are good to enable secureboot... If you turned on setup mode in bios before installation."
 	sbctl verify
@@ -299,7 +296,7 @@ sed -i '/^
 
 /,/^Include/ s/^#//' /etc/pacman.conf
 
-pacman -Syu chaotic-keyring chaotic-mirrorlist --noconfirmI
+pacman -Syu chaotic-keyring chaotic-mirrorlist --noconfirm
 
 pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 pacman-key --lsign-key 3056513887B78AEB
