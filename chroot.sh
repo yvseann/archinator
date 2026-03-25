@@ -284,7 +284,7 @@ if [[ "$secure_boot" =~ ^[Yy]$ ]]; then
 	sbctl sign -s /boot/initramfs-linux-zen.img
 	sbctl sign -s /boot/initramfs-linux-zen-fallback.img
 
-	echo "Verified... You are good to enable secureboot... If you reset secureboot keys before installation."
+	echo "Verified... You are good to enable secureboot... If you turned on setup mode in bios before installation."
 	sbctl verify
 
 else
@@ -313,8 +313,7 @@ pacman -Syu
 
 # temp stuff because yes.
 
-pacman -Syu xfce4 xorg-server xorg-xinit alacritty network-manager-applet NetworkManager ly --noconfirm
-systemctl enable NetworkManager
+pacman -Syu xfce4 xorg-server xorg-xinit alacritty network-manager-applet ly --noconfirm
 
 pacman -Syu ly brightnessctl paru --noconfirm
 systemctl enable ly@tty1.service
